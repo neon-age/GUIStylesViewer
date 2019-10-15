@@ -105,6 +105,8 @@ class GUIStylesViewer : EditorWindow
         LoadGUISkins();
     }
     GUIStyle regionBg;
+    GUIStyle grayMiniLabel;
+    GUIStyle optionsIcon;
     GUIStyle settingsBox;
     GUIStyle foldout;
     GUIStyle searchTextField;
@@ -115,14 +117,19 @@ class GUIStylesViewer : EditorWindow
     {
         regionBg = new GUIStyle("RegionBg")
         {
-            margin = new RectOffset(8, 8, 8, 0),
-            padding = new RectOffset(16, 16, 8, 16),
+            margin = new RectOffset(8, 8, 0, 0),
+            padding = new RectOffset(16, 16, 6, 14),
             border = new RectOffset(12, 12, 12, 12),
-            contentOffset = new Vector2(10, -10),
             fontSize = 12,
             alignment = TextAnchor.UpperLeft
         };
+        string regionBgTexGUID = AssetDatabase.FindAssets("RegionBgStyleNormalState")[0];
+        Texture2D regionBgTex = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(regionBgTexGUID));
+        regionBg.normal.background = regionBgTex;
         backgroundHeight = regionBg.CalcSize(new GUIContent(" ")).y;
+
+        grayMiniLabel = new GUIStyle(EditorStyles.centeredGreyMiniLabel) { fixedWidth = 0, alignment = TextAnchor.MiddleLeft, padding = new RectOffset(0,0,0,2) };
+        optionsIcon = new GUIStyle("Icon.Options") { fixedWidth = 15, margin = new RectOffset(0, 0, 2, 0) };
         settingsBox = new GUIStyle("NotificationBackground")
         {
             margin = new RectOffset(8, 8, 8, 8),
@@ -264,11 +271,23 @@ class GUIStylesViewer : EditorWindow
 
         GUILayout.Space(-6);
         EditorGUILayout.BeginVertical(regionBg);
-        GUILayout.Space(4);
-        settingsCollapse.target = GUILayout.Toggle(settingsCollapse.target, "Settings", foldout);
+        GUILayout.Space(7);
+
+        // Search field
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Count: " + filteredStyles.Count, grayMiniLabel, GUILayout.Width(65));
+        searchFilter = EditorGUILayout.TextField(searchFilter, searchTextField, GUILayout.MinWidth(10));
+        GUILayout.Space(-1);
+        GUILayout.Button("", "ToolbarSeachCancelButtonEmpty");
         GUILayout.Space(2);
+        settingsCollapse.target = GUILayout.Toggle(settingsCollapse.target, "", optionsIcon);
+        EditorGUILayout.EndHorizontal();
+
+        GUILayout.Space(-2);
+
         if (EditorGUILayout.BeginFadeGroup(settingsCollapse.faded))
         {
+            GUILayout.Space(6);
             EditorGUIUtility.labelWidth = 95;
             showSampleText = EditorGUILayout.Toggle("Show Text", showSampleText);
             EditorGUI.BeginChangeCheck();
@@ -302,21 +321,8 @@ class GUIStylesViewer : EditorWindow
             if (optimizeScroll)
                 EditorGUILayout.LabelField("Start: " + scrollStart + " : End: " + scrollEnd, EditorStyles.centeredGreyMiniLabel);
             EditorGUILayout.EndHorizontal();
-            
-            GUILayout.Space(6);
         }
         EditorGUILayout.EndFadeGroup();
-
-        // Search field
-        EditorGUILayout.BeginHorizontal();
-        EditorGUIUtility.labelWidth = 45;
-        EditorGUILayout.LabelField("Count: " + filteredStyles.Count, EditorStyles.miniLabel, GUILayout.MinWidth(45));
-        EditorGUIUtility.labelWidth = labelWidth;
-        searchFilter = EditorGUILayout.TextField(searchFilter, searchTextField, GUILayout.MinWidth(10));
-        GUILayout.Space(-1);
-        GUILayout.Button("", "ToolbarSeachCancelButtonEmpty");
-        EditorGUILayout.EndHorizontal();
-
         EditorGUILayout.EndVertical();
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
