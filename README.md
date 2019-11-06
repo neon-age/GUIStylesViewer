@@ -1,10 +1,9 @@
 # GUIStylesViewer
-GUIStyles viewer for Unity with optimized scroll and SaveToTexture feature
+GUIStyles and Icons viewer for Unity with SaveToTexture feature and optimized scrollview
 
 ### Window > UI > GUIStyles Viewer
+![BuiltInIcons](https://i.imgur.com/9FyuLT2.png)
 ![GUIStylesViewerImg](https://i.imgur.com/zxe8byq.png)
 
 #### ToDo:
-- Support for viewing Built-In Icons
-- Custom GUISkin support (is it still relevant?)
-- Make better implementation of optimized scroll view (Maybe decompile UnityEditor code and rewrite it)
+- ~~Support for viewing Built-In Icons~~
